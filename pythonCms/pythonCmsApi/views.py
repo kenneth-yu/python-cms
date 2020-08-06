@@ -16,18 +16,25 @@ class WebsiteViewSet(viewsets.ModelViewSet):
     serializer_class = WebsiteModelSerializer
 
 class UserModelViewSet(viewsets.ModelViewSet):
-    queryset = UserModel.objects.all()
     serializer_class = UserModelSerializer
+    queryset = UserModel.objects.all()
+
+    def get_queryset(self):
+        username = self.request.query_params.get('username')
+        queryset = UserModel.objects
+        if(username):
+            queryset = queryset.filter(username=username)
+
+        return queryset.all()
+        
 
 class UserViewSet(viewsets.ModelViewSet):
     #API endpoint that allows users to be viewed or edited.
-
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
 
 class GroupViewSet(viewsets.ModelViewSet):
     #API endpoint that allows groups to be viewed or edited.
-
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
